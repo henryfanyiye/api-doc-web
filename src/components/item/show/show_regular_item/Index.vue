@@ -43,12 +43,12 @@
           </div>
         </div>
 
-        <OpBar
-            :page_id='page_id'
-            :item_id='item_info.item_id'
-            :item_info='item_info'
-            :page_info='page_info'
-        ></OpBar>
+        <!--        <OpBar-->
+        <!--            :page_id='page_id'-->
+        <!--            :item_id='item_info.item_id'-->
+        <!--            :item_info='item_info'-->
+        <!--            :page_info='page_info'-->
+        <!--        ></OpBar>-->
       </div>
     </div>
 
@@ -101,38 +101,36 @@ export default {
   },
   methods: {
     // 获取页面内容
-    get_page_content(page_id) {
-      if (page_id <= 0) {
-        return
-      }
+    get_page_content(id) {
+      console.log(id)
       this.adaptScreen()
-      let that = this
-      this.request('/api/page/info', {
-        'page_id': page_id
-      }, 'post', false).then((data) => {
-        // loading.close();
-        if (data.error_code === 0) {
-          that.content = rederPageContent(data.data.page_content, that.$store.state.item_info.global_param)
-
-          that.page_title = data.data.page_title
-          that.page_info = data.data
-          that.attachment_count =
-              data.data.attachment_count > 0
-                  ? data.data.attachment_count
-                  : ''
-          // 切换变量让它重新加载、渲染子组件
-          that.page_id = 0
-          that.item_info.default_page_id = page_id
-          that.$nextTick(() => {
-            that.page_id = page_id
-            // 页面回到顶部
-            document.body.scrollTop = document.documentElement.scrollTop = 0
-            document.title = that.page_title + '--ShowDoc'
-          })
-        } else {
-          // that.$alert(data.error_message);
-        }
-      })
+      // let that = this
+      // this.request('/api/page/info', {
+      //   'page_id': page_id
+      // }, 'post', false).then((data) => {
+      //   // loading.close();
+      //   if (data.error_code === 0) {
+      //     that.content = rederPageContent(data.data.page_content, that.$store.state.item_info.global_param)
+      //
+      //     that.page_title = data.data.page_title
+      //     that.page_info = data.data
+      //     that.attachment_count =
+      //         data.data.attachment_count > 0
+      //             ? data.data.attachment_count
+      //             : ''
+      //     // 切换变量让它重新加载、渲染子组件
+      //     that.page_id = 0
+      //     that.item_info.default_page_id = page_id
+      //     that.$nextTick(() => {
+      //       that.page_id = page_id
+      //       // 页面回到顶部
+      //       document.body.scrollTop = document.documentElement.scrollTop = 0
+      //       document.title = that.page_title + '--ShowDoc'
+      //     })
+      //   } else {
+      //     // that.$alert(data.error_message);
+      //   }
+      // })
     },
     // 根据屏幕宽度进行响应(应对移动设备的访问)
     adaptToMobile() {

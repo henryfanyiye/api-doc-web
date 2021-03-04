@@ -1,25 +1,22 @@
 <template>
   <div>
-    <template v-if="catalog.length">
-      <el-submenu v-for="(catalog2 ) in catalog" :index="catalog2.cat_id" :key="catalog2.cat_id">
-        <template slot="title">
-          <img src="static/images/folder.png" />
-          {{catalog2.cat_name}}
+    <template v-if='catalogs.length'>
+      <el-submenu v-for='catalog in catalogs' :index='catalog.pcid.toString()' :key='catalog.pcid'>
+        <template slot='title'>
+          <img src='static/images/folder.png' />
+          {{ catalog.catalogName }}
         </template>
-        <!-- 三级目录的页面 -->
-        <template v-if="catalog2.pages">
-          <el-menu-item
-            v-for="(page3 ) in catalog2.pages"
-            :index="page3.page_id"
-            :key="page3.page_id"
-          >
-            <i class="el-icon-document"></i>
-            <span :title="page3.page_title" :id="'left_page_'+page3.page_id">{{page3.page_title}}</span>
+
+        三级目录的页面
+        <template v-if='catalog.items'>
+          <el-menu-item v-for='item in catalog.items' :index='item.id.toString()' :key='item.id'>
+            <i class='el-icon-document'></i>
+            <span :title='item.name' :id="'left_page_'+item.id">{{ item.name }}</span>
           </el-menu-item>
         </template>
 
         <!-- 子目录 -->
-        <LeftMenuSub v-if="catalog2.catalogs.length" :catalog="catalog2.catalogs"></LeftMenuSub>
+        <LeftMenuSub v-if='catalog.catalogs && catalog.catalogs.length' :catalogs='catalog.catalogs'></LeftMenuSub>
       </el-submenu>
     </template>
   </div>
@@ -30,7 +27,7 @@
 export default {
   name: 'LeftMenuSub',
   props: {
-    catalog: []
+    catalogs: {}
   },
   data() {
     return {}
@@ -38,7 +35,6 @@ export default {
   components: {},
   methods: {},
   mounted() {
-    // console.log(this.catalog)
   }
 }
 </script>
@@ -61,19 +57,23 @@ export default {
   height: 46px;
   line-height: 46px;
 }
+
 .el-submenu .el-menu-item {
   height: 40px;
   line-height: 40px;
 }
+
 .el-menu-item {
   line-height: 40px;
   height: 40px;
   font-size: 12px;
 }
+
 .el-menu-item [class^='el-icon-'] {
   font-size: 17px;
   margin-bottom: 4px;
 }
+
 .el-submenu__title img {
   width: 14px;
   cursor: pointer;

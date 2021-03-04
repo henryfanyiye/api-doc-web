@@ -37,8 +37,8 @@ export default {
       projectAll(this.$route.params.item_id).then(res => {
         loading.close()
         that.item_info = res
-        that.$store.dispatch('changeItemInfo', json)
-        document.title = that.item_info.item_name + '--ShowDoc'
+        that.$store.dispatch('changeItemInfo', res)
+        document.title = that.item_info.projectName + '--ShowDoc'
       }).catch(err => {
         loading.close()
         that.$alert(err.msg)

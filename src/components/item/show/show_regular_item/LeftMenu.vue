@@ -37,15 +37,15 @@
         ></el-input>
 
         <!-- 一级页面 -->
-        <template v-if='menu.pages && menu.pages.length '>
-          <el-menu-item v-for='(page ) in menu.pages' :index='page.page_id' :key='page.page_id'>
+        <template v-if='menu.items && menu.items.length > 0'>
+          <el-menu-item v-for='item in menu.items' :index='item.id' :key='item.id'>
             <i class='el-icon-document'></i>
-            <span :title='page.page_title' :id="'left_page_'+page.page_id">{{ page.page_title }}</span>
+            <span :title='item.title' :id="'left_page_'+item.id">{{ item.title }}</span>
           </el-menu-item>
         </template>
 
         <!-- 目录开始 -->
-        <LeftMenuSub v-if='menu.catalogs && menu.catalogs.length' :catalog='menu.catalogs'></LeftMenuSub>
+        <LeftMenuSub v-if='menu.catalogs && menu.catalogs.length' :catalogs='menu.catalogs'></LeftMenuSub>
       </el-menu>
     </el-aside>
   </div>
@@ -92,16 +92,16 @@ export default {
     },
 
     // 改变url
-    change_url(page_id) {
-      if (page_id > 0 && page_id == this.$route.query.page_id) {
+    change_url(id) {
+      if (id == this.$route.query.id) {
         return
       }
-      var domain = this.item_info.item_domain
+      const domain = this.item_info.item_domain
           ? this.item_info.item_domain
           : this.item_info.item_id
       this.$router.replace({
         path: '/' + domain,
-        query: { page_id: page_id }
+        query: { id }
       })
     },
 
@@ -131,33 +131,32 @@ export default {
   },
   mounted() {
     const that = this
-    this.menu = this.item_info.menu
-    const item_info = this.item_info
+    that.menu = that.item_info
     // 默认展开页面
-    if (item_info.default_page_id > 0) {
-      that.select_menu(item_info.default_page_id)
-      if (item_info.default_cat_id4) {
-        that.openeds = [
-          item_info.default_cat_id4,
-          item_info.default_cat_id3,
-          item_info.default_cat_id2,
-          item_info.default_page_id
-        ]
-      } else if (item_info.default_cat_id3) {
-        that.openeds = [
-          item_info.default_cat_id3,
-          item_info.default_cat_id2,
-          item_info.default_page_id
-        ]
-      } else if (item_info.default_cat_id2) {
-        that.openeds = [item_info.default_cat_id2, item_info.default_page_id]
-      }
-      // 延迟把左侧栏滚动到默认展开的那个页面
-      setTimeout(() => {
-        const element = document.querySelector('#left_page_' + item_info.default_page_id)
-        element.scrollIntoView()
-      }, 1000)
-    }
+    // if (item_info.default_page_id > 0) {
+    //   that.select_menu(item_info.default_page_id)
+    //   if (item_info.default_cat_id4) {
+    //     that.openeds = [
+    //       item_info.default_cat_id4,
+    //       item_info.default_cat_id3,
+    //       item_info.default_cat_id2,
+    //       item_info.default_page_id
+    //     ]
+    //   } else if (item_info.default_cat_id3) {
+    //     that.openeds = [
+    //       item_info.default_cat_id3,
+    //       item_info.default_cat_id2,
+    //       item_info.default_page_id
+    //     ]
+    //   } else if (item_info.default_cat_id2) {
+    //     that.openeds = [item_info.default_cat_id2, item_info.default_page_id]
+    //   }
+    //   // 延迟把左侧栏滚动到默认展开的那个页面
+    //   setTimeout(() => {
+    //     const element = document.querySelector('#left_page_' + item_info.default_page_id)
+    //     element.scrollIntoView()
+    //   }, 1000)
+    // }
 
     // 如果是大屏幕且存在目录，则把侧边栏调大
     if (
