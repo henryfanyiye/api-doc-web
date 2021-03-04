@@ -8,8 +8,6 @@ import 'element-ui/lib/theme-chalk/index.css'
 import Header from '@/components/common/Header'
 import Footer from '@/components/common/Footer'
 import util from '@/util.js'
-import axios from '@/http'
-import request from '@/request.js'
 import VueI18n from 'vue-i18n'
 import enLocale from 'element-ui/lib/locale/lang/en'
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
@@ -29,15 +27,11 @@ Vue.use(VueI18n)
 Vue.use(VueClipboard)
 
 // 多语言相关
-var allZhLocale = Object.assign(zhLocale, myZhLocale)
-var allEnLocale = Object.assign(enLocale, myEnLocale)
+const allZhLocale = Object.assign(zhLocale, myZhLocale)
+const allEnLocale = Object.assign(enLocale, myEnLocale)
 Vue.config.lang = DocConfig.lang
 Vue.locale('zh-cn', allZhLocale)
 Vue.locale('en', allEnLocale)
-
-// 将axios挂载到prototype上，在组件中可以直接使用this.axios访问
-Vue.prototype.axios = axios
-Vue.prototype.request = request
 
 /* eslint-disable no-new */
 

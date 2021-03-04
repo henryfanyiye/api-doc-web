@@ -95,31 +95,17 @@ export default {
     change_v_code_img() {
       const rand = '&rand=' + Math.random()
       this.v_code_img += rand
-    },
-    script_cron() {
-      const url = DocConfig.server + '/api/ScriptCron/run'
-      this.axios.get(url)
-    },
-    checkDb() {
-      const url = DocConfig.server + '/api/update/checkDb'
-      this.axios.get(url)
     }
   },
   mounted() {
-    const that = this
-    // detail().then(() => {
-    //   let redirect = decodeURIComponent(
-    //       that.$route.query.redirect || '/item/index'
-    //   )
-    //   that.$router.replace({
-    //     path: redirect
-    //   })
-    // })
-
-    // this.script_cron()
-    // this.checkDb()
-  },
-  beforeDestroy() {
+    const user = JSON.parse(localStorage.getItem('userInfo'))
+    if (user) {
+      detail().then(() => {
+        this.$router.replace({
+          path: '/item/index'
+        })
+      })
+    }
   }
 }
 </script>

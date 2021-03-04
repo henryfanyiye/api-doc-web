@@ -65,29 +65,32 @@
           </div>
         </div>
 
-        <ul class='thumbnails' id='item-list' v-if='itemListByKeyword'>
-          <draggable v-model='itemListByKeyword' tag='span' group='item' @end='endMove' ghostClass='sortable-chosen'>
-            <li class='text-center' v-for='item in itemListByKeyword'
-                v-dragging="{ item: item, list: itemListByKeyword, group: 'item' }" :key='item.projectId'>
+        <ul class='thumbnails' id='item-list' v-if='itemList'>
+          <draggable v-model='itemList' tag='span' group='item' @end='endMove' ghostClass='sortable-chosen'>
+            <li class='text-center' v-for='item in itemList' :key='item.projectId'>
               <router-link class='thumbnail item-thumbnail'
                            :to="'/' +  (item.item_domain ? item.item_domain:item.projectId )" title>
+
                 <!-- 自己创建的话显示项目设置按钮 -->
                 <span class='item-setting' @click.prevent='click_item_setting(item.projectId)'
                       :title="$t('item_setting')" v-if='item.creator'>
-                  <i class='el-icon-setting'></i>
-                </span>
+                                <i class='el-icon-setting'></i>
+                              </span>
+
                 <!-- 如果是加入的项目的话，这里显示退出按钮 -->
-                <span class='item-exit' @click.prevent='click_item_exit(item.projectId)' :title="$t('item_exit')"
+                <span class='item-exit' @click.prevent='click_item_exit(item.projectId)'
+                      :title="$t('item_exit')"
                       v-if='! item.creator'>
-                  <i class='el-icon-close'></i>
-                </span>
+                                <i class='el-icon-close'></i>
+                              </span>
                 <p class='my-item'>{{ item.projectName }}</p>
+
                 <!-- 如果是加密项目的话，这里显示一个加密图标 -->
                 <span class='item-private' v-if='item.is_private'>
-                  <el-tooltip class='item' effect='dark' :content="$t('private_tips')" placement='right'>
-                    <i class='el-icon-lock'></i>
-                  </el-tooltip>
-                </span>
+                                <el-tooltip class='item' effect='dark' :content="$t('private_tips')" placement='right'>
+                                  <i class='el-icon-lock'></i>
+                                </el-tooltip>
+                              </span>
               </router-link>
             </li>
           </draggable>
@@ -245,11 +248,8 @@ a {
 
 <script>
 import draggable from 'vuedraggable'
-import { projectList } from '@/api/api'
+import { detail, projectList } from '@/api/api'
 
-if (typeof window !== 'undefined') {
-  const $s = require('scriptjs')
-}
 export default {
   components: {
     draggable
@@ -257,25 +257,11 @@ export default {
   data() {
     return {
       currentDate: new Date(),
-      itemList: {},
+      itemList: [],
       isAdmin: false,
       keyword: '',
       lang: '',
       username: ''
-    }
-  },
-  computed: {
-    itemListByKeyword: function() {
-      if (!this.keyword) {
-        return this.itemList
-      }
-      let itemListByKeyword = []
-      for (let i = 0; i < this.itemList.length; i++) {
-        if (this.itemList[i]['projectName'].indexOf(this.keyword) > -1) {
-          itemListByKeyword.push(this.itemList[i])
-        }
-      }
-      return itemListByKeyword
     }
   },
   methods: {
@@ -308,55 +294,15 @@ export default {
       })
     },
     logout() {
-      const that = this
-      const url = DocConfig.server + '/api/user/logout'
-
-      const params = new URLSearchParams()
-
-      that.axios.get(url, params).then(function(response) {
-        if (response.data.code === 0) {
-          that.$router.push({
-            path: '/'
-          })
-        } else {
-          that.$alert(response.data.msg)
-        }
-      })
-    },
-
-    user_info() {
-      const that = this
-      this.get_user_info(function(response) {
-        if (response.data.code === 0) {
-          if (response.data.data.groupid == 1) {
-            that.isAdmin = true
-          }
-        }
+      localStorage.clear()
+      this.$router.replace({
+        path: '/user/login'
       })
     },
     dropdown_callback(data) {
       if (data) {
         data()
       }
-    },
-
-    sort_item(data) {
-      const that = this
-      const url = DocConfig.server + '/api/item/sort'
-      const params = new URLSearchParams()
-      params.append('data', JSON.stringify(data))
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.code === 0) {
-          that.get_item_list()
-          // window.location.reload();
-        } else {
-          that.$alert(response.data.msg, '', {
-            callback: function() {
-              window.location.reload()
-            }
-          })
-        }
-      })
     },
     exchangeArray(data, oldIndex, newIndex) {
       let tmp = data[oldIndex]
@@ -379,27 +325,14 @@ export default {
         let key = list[i]['projectId']
         data[key] = i + 1
       }
-      this.sort_item(data)
-    },
-    script_cron() {
-      const url = DocConfig.server + '/api/ScriptCron/run'
-      this.axios.get(url)
-    },
-    checkDb() {
-      const url = DocConfig.server + '/api/update/checkDb'
-      this.axios.get(url)
     }
   },
   mounted() {
     this.get_item_list()
-    this.user_info()
     this.lang = DocConfig.lang
-    // this.script_cron()
-    // this.checkDb()
-    this.get_user_info(response => {
-      if (response.data.code === 0) {
-        this.username = response.data.data.username
-      }
+    detail().then(res => {
+      this.username = res.username
+      this.isAdmin = res.admin
     })
   },
   beforeDestroy() {

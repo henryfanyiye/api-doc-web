@@ -1,4 +1,3 @@
-import { detail } from '@/api/api'
 // 全局函数/变量
 export default {
   install(Vue, options) {
@@ -21,23 +20,6 @@ export default {
     /* 判断是否是移动设备 */
     Vue.prototype.isMobile = function() {
       return !!navigator.userAgent.match(/iPhone|iPad|iPod|Android|android|BlackBerry|IEMobile/i)
-    }
-
-    Vue.prototype.get_user_info = () => (detail())
-
-    Vue.prototype.get_notice = function(callback) {
-      var that = this
-      var url = DocConfig.server + '/api/notice/getList'
-      var params = new URLSearchParams()
-      params.append('notice_type', 'unread')
-      params.append('count', '1')
-      that.axios.post(url, params)
-        .then(function(response) {
-          if (callback) {
-            callback(response)
-          }
-
-        })
     }
 
     Vue.prototype.set_bg_grey = function() {
