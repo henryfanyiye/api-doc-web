@@ -1,8 +1,6 @@
 import axios from 'axios'
-import { Loading, Message } from 'element-ui'    // 这里我是使用elementUI的组件来给提示
+import { Message } from 'element-ui'    // 这里我是使用elementUI的组件来给提示
 import router from '@/router/index'
-
-let loadingInstance = null     // 加载全局的loading
 
 const instance = axios.create({    //创建axios实例，在这里可以设置请求的默认配置
   timeout: 10000, // 设置超时时间10s
@@ -33,11 +31,6 @@ instance.interceptors.request.use(config => {
       t: new Date().getTime()
     }
   }
-  // 在这里：可以根据业务需求可以在发送请求之前做些什么:例如我这个是导出文件的接口，因为返回的是二进制流，所以需要设置请求响应类型为blob，就可以在此处设置。
-  if (config.url.includes('api/postman/export')) {
-    config.headers['responseType'] = 'blob'
-  }
-  // 我这里是文件上传，发送的是二进制流，所以需要设置请求头的'Content-Type'
   if (config.url.includes('api/postman/upload')) {
     config.headers['Content-Type'] = 'multipart/form-data'
   }
@@ -58,7 +51,7 @@ instance.interceptors.response.use(response => {
       message: tips,
       type: 'error'
     })
-    if (error.response.status === 401) {    // token或者登陆失效情况下跳转到登录页面，根据实际情况，在这里可以根据不同的响应错误结果，做对应的事。这里我以401判断为例
+    if (error.response.status === 401) {
       router.push({
         path: `/user/login`
       })

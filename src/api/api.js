@@ -39,6 +39,25 @@ const post = (url, data, config = {}) => {
   })
 }
 
+const del = (url, params, config = {}) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: 'DELETE',
+      url,
+      params,
+      ...config
+    }).then(res => {
+      if (res.code === 0) {
+        return resolve(res.data || true)
+      } else {
+        return reject(res)
+      }
+    }).catch(err => {
+      return reject(err)
+    })
+  })
+}
+
 /**
  * User
  * - Login
@@ -46,5 +65,20 @@ const post = (url, data, config = {}) => {
  * - Project list
  */
 export const login = (data, config = {}) => post('/api/user/login', data, config)
-export const detail = (params, config = {}) => get('/api/user/detail', params, config)
-export const projectList = (params, config = {}) => get('/api/user/project/list', params, config)
+export const detail = () => get('/api/user/detail')
+export const projectList = () => get('/api/user/project/list')
+export const checkPwd = (data) => post('/api/user/password/check', data)
+
+/**
+ * Project
+ * - Query info
+ * - Create new project
+ * - Update project
+ * - Delete project
+ */
+export const projectInfo = (id) => get(`/api/project/project/${id}`)
+export const createProject = (data) => post('/api/project/project/add', data)
+export const updateProject = (id, data) => post(`/api/project/project/update/${id}`, data)
+export const deleteProject = (id) => del(`/api/project/project/${id}`)
+export const attornProject = (data) => post('/api/project/project/attorn', data)
+export const projectAll = (id) => get(`/api/project/${id}`)

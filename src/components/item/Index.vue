@@ -69,7 +69,7 @@
           <draggable v-model='itemList' tag='span' group='item' @end='endMove' ghostClass='sortable-chosen'>
             <li class='text-center' v-for='item in itemList' :key='item.projectId'>
               <router-link class='thumbnail item-thumbnail'
-                           :to="'/' +  (item.item_domain ? item.item_domain:item.projectId )" title>
+                           :to="'/' + item.projectId" title>
 
                 <!-- 自己创建的话显示项目设置按钮 -->
                 <span class='item-setting' @click.prevent='click_item_setting(item.projectId)'
@@ -84,13 +84,6 @@
                                 <i class='el-icon-close'></i>
                               </span>
                 <p class='my-item'>{{ item.projectName }}</p>
-
-                <!-- 如果是加密项目的话，这里显示一个加密图标 -->
-                <span class='item-private' v-if='item.is_private'>
-                                <el-tooltip class='item' effect='dark' :content="$t('private_tips')" placement='right'>
-                                  <i class='el-icon-lock'></i>
-                                </el-tooltip>
-                              </span>
               </router-link>
             </li>
           </draggable>

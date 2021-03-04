@@ -104,6 +104,8 @@ export default {
         this.$router.replace({
           path: '/item/index'
         })
+      }).catch(() => {
+        localStorage.clear()
       })
     }
   }

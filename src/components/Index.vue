@@ -28,12 +28,13 @@ export default {
     this.getHeight()
     const user = JSON.parse(localStorage.getItem('userInfo'))
     if (user) {
-      detail().then(res => {
+      detail().then(() => {
         // 跳转项目列表页
         this.$router.replace({
           path: '/item/index'
         })
-      }).catch(err => {
+      }).catch(() => {
+        localStorage.clear()
         // 跳转到登录页面
         this.$router.replace({
           path: '/user/login'

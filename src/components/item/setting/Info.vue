@@ -15,20 +15,6 @@
       </el-form-item>
 
       <el-form-item label>
-        <el-radio v-model='isOpenItem' :label='true'>{{ $t('Open_item') }}</el-radio>
-        <el-radio v-model='isOpenItem' :label='false'>{{ $t('private_item') }}</el-radio>
-      </el-form-item>
-
-      <el-form-item v-show='!isOpenItem'>
-        <el-input
-            type='password'
-            auto-complete='off'
-            v-model='infoForm.password'
-            :placeholder="$t('visit_password')"
-        ></el-input>
-      </el-form-item>
-
-      <el-form-item label>
         <el-button type='primary' style='width:100%;' @click='FormSubmit'>{{ $t('submit') }}</el-button>
       </el-form-item>
     </el-form>
@@ -36,74 +22,40 @@
 </template>
 
 <script>
+import { projectInfo, updateProject } from '@/api/api'
+
 export default {
   name: 'Login',
   components: {},
   data() {
     return {
-      infoForm: {},
-      isOpenItem: true
+      infoForm: {}
     }
   },
   methods: {
-    get_item_info() {
+    getProjectInfo() {
       const that = this
-      const url = DocConfig.server + `/api/project/project/${that.$route.params.item_id}`
-      const user = JSON.parse(localStorage.getItem('userinfo'))
-      that.axios({
-        method: 'GET',
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + user.accessToken
-        }
-      }).then(response => {
-        if (response.data.code === 0) {
-          that.infoForm = response.data.data
-          that.isOpenItem = response.data.data.is_private
-        } else {
-          that.$alert(response.data.msg)
-        }
-      }).catch(function(error) {
-        console.log(error)
+      projectInfo(that.$route.params.item_id).then(res => {
+        that.infoForm = res
+      }).catch(err => {
+        that.$alert(err.msg)
       })
     },
     FormSubmit() {
       const that = this
-      const url = DocConfig.server + `/api/project/project/update/${that.$route.params.item_id}`
-      const user = JSON.parse(localStorage.getItem('userinfo'))
-      if (!this.isOpenItem && !this.infoForm.password) {
-        that.$alert(that.$t('private_item_passwrod'))
-        return false
-      }
-      if (this.isOpenItem) {
-        this.infoForm.password = ''
-      }
-      that.axios({
-        method: 'POST',
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + user.accessToken
-        },
-        data: JSON.stringify({
-          is_private: this.isOpenItem,
-          password: this.infoForm.password
-        })
-      }).then(function(response) {
-        if (response.data.code === 0) {
-          that.$message.success(that.$t('modify_success'))
-        } else {
-          that.$alert(response.data.msg)
-        }
-      }).catch(function(error) {
-        console.log(error)
+      updateProject(
+          that.$route.params.item_id,
+          { project_name: this.infoForm.project_name, description: this.infoForm.description }
+      ).then(() => {
+        that.$message.success(that.$t('modify_success'))
+      }).catch(err => {
+        that.$alert(err.msg)
       })
     }
   },
 
   mounted() {
-    this.get_item_info()
+    this.getProjectInfo()
   }
 }
 </script>

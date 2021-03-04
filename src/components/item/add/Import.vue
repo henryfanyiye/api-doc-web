@@ -1,57 +1,58 @@
 <template>
-  <div class="hello">
-    <p class="tips">
+  <div class='hello'>
+    <p class='tips'>
       <span v-html="$t('import_file_tips1')"></span>
     </p>
 
     <p>
       <el-upload
-        class="upload-demo"
-        drag
-        name="file"
-        :action="upload_url"
-        :on-success="success"
-        :before-upload="beforeUpload"
-        :show-file-list="false"
+          class='upload-demo'
+          drag
+          name='file'
+          :action='upload_url'
+          :headers='headers'
+          :on-success='success'
+          :on-error='error'
+          :before-upload='beforeUpload'
+          :show-file-list='false'
       >
-        <i class="el-icon-upload"></i>
-        <div class="el-upload__text">
-          <span v-html="$t('import_file_tips2')"></span>
-        </div>
-      </el-upload>
+        <i class='el-icon-upload'></i>
+    <div class='el-upload__text'>
+      <span v-html="$t('import_file_tips2')"></span>
+    </div>
+    </el-upload>
     </p>
-    <p></p>
-    <p></p>
   </div>
 </template>
 
 <script>
+import { upload } from '@/api/api'
+
 export default {
   name: 'Login',
   components: {},
   data() {
     return {
-      api_key: '',
-      api_token: '',
       loading: '',
-      upload_url: DocConfig.server + '/api/import/auto'
+      upload_url: DocConfig.server + '/api/postman/upload',
+      headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('userInfo')).accessToken }
     }
   },
   methods: {
-    success(data) {
+    success() {
       this.loading.close()
-      if (data.error_code === 0) {
-        this.$router.push({ path: '/item/index' })
-      } else {
-        this.$alert(data.error_message)
-      }
+      this.$router.push({ path: '/item/index' })
+    },
+    error() {
+      this.loading.close()
     },
     beforeUpload() {
       this.loading = this.$loading()
     }
   },
 
-  mounted() {}
+  mounted() {
+  }
 }
 </script>
 

@@ -20,10 +20,6 @@
             <el-tab-pane :label="$t('advance_setting')" name='third'>
               <Advanced></Advanced>
             </el-tab-pane>
-
-            <el-tab-pane :label="$t('recycle')" name='five'>
-              <Recycle></Recycle>
-            </el-tab-pane>
           </el-tabs>
         </template>
       </el-card>
@@ -37,15 +33,13 @@
 import Info from '@/components/item/setting/Info'
 import Member from '@/components/item/setting/Member'
 import Advanced from '@/components/item/setting/Advanced'
-import Recycle from '@/components/item/setting/Recycle'
 
 export default {
   name: 'Login',
   components: {
     Info,
     Member,
-    Advanced,
-    Recycle
+    Advanced
   },
   data() {
     return {
@@ -56,11 +50,6 @@ export default {
     goback() {
       this.$router.go(-1)
     }
-  },
-
-  mounted() {
-  },
-  beforeDestroy() {
   }
 }
 </script>

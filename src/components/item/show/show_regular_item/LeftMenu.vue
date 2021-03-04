@@ -1,51 +1,51 @@
 <template>
   <div :class=" hideScrollbar ? 'hide-scrollbar' : 'normal-scrollbar' ">
     <i
-      class="el-icon-menu header-left-btn"
-      v-if="show_menu_btn"
-      id="header-left-btn"
-      @click="show_menu"
+        class='el-icon-menu header-left-btn'
+        v-if='show_menu_btn'
+        id='header-left-btn'
+        @click='show_menu'
     ></i>
     <i
-      class="el-icon-menu header-left-btn"
-      v-if="show_menu_btn"
-      id="header-left-btn"
-      @click="show_menu"
+        class='el-icon-menu header-left-btn'
+        v-if='show_menu_btn'
+        id='header-left-btn'
+        @click='show_menu'
     ></i>
     <el-aside
-      :class="menuMarginLeft"
-      id="left-side-menu"
-      :width="asideWidth"
-      @mouseenter.native="hideScrollbar = false"
-      @mouseleave.native="hideScrollbar = true"
+        :class='menuMarginLeft'
+        id='left-side-menu'
+        :width='asideWidth'
+        @mouseenter.native='hideScrollbar = false'
+        @mouseleave.native='hideScrollbar = true'
     >
       <el-menu
-        @select="select_menu"
-        background-color="#fafafa"
-        text-color
-        active-text-color="#008cff"
-        :default-active="item_info.default_page_id"
-        :default-openeds="openeds"
+          @select='select_menu'
+          background-color='#fafafa'
+          text-color
+          active-text-color='#008cff'
+          :default-active='item_info.default_page_id'
+          :default-openeds='openeds'
       >
         <el-input
-          @keyup.enter.native="input_keyword"
-          :placeholder="$t('input_keyword')"
-          class="search-box"
-          :clearable="true"
-          @clear="search_item()"
-          v-model="keyword"
+            @keyup.enter.native='input_keyword'
+            :placeholder="$t('input_keyword')"
+            class='search-box'
+            :clearable='true'
+            @clear='search_item()'
+            v-model='keyword'
         ></el-input>
 
         <!-- 一级页面 -->
-        <template v-if="menu.pages && menu.pages.length ">
-          <el-menu-item v-for="(page ) in menu.pages" :index="page.page_id" :key="page.page_id">
-            <i class="el-icon-document"></i>
-            <span :title="page.page_title" :id="'left_page_'+page.page_id">{{page.page_title}}</span>
+        <template v-if='menu.pages && menu.pages.length '>
+          <el-menu-item v-for='(page ) in menu.pages' :index='page.page_id' :key='page.page_id'>
+            <i class='el-icon-document'></i>
+            <span :title='page.page_title' :id="'left_page_'+page.page_id">{{ page.page_title }}</span>
           </el-menu-item>
         </template>
 
         <!-- 目录开始 -->
-        <LeftMenuSub v-if="menu.catalogs && menu.catalogs.length" :catalog="menu.catalogs"></LeftMenuSub>
+        <LeftMenuSub v-if='menu.catalogs && menu.catalogs.length' :catalog='menu.catalogs'></LeftMenuSub>
       </el-menu>
     </el-aside>
   </div>
@@ -97,8 +97,8 @@ export default {
         return
       }
       var domain = this.item_info.item_domain
-        ? this.item_info.item_domain
-        : this.item_info.item_id
+          ? this.item_info.item_domain
+          : this.item_info.item_id
       this.$router.replace({
         path: '/' + domain,
         query: { page_id: page_id }
@@ -130,9 +130,9 @@ export default {
     }
   },
   mounted() {
-    var that = this
+    const that = this
     this.menu = this.item_info.menu
-    var item_info = this.item_info
+    const item_info = this.item_info
     // 默认展开页面
     if (item_info.default_page_id > 0) {
       that.select_menu(item_info.default_page_id)
@@ -161,9 +161,9 @@ export default {
 
     // 如果是大屏幕且存在目录，则把侧边栏调大
     if (
-      window.screen.width >= 1600 &&
-      this.menu.catalogs &&
-      this.menu.catalogs.length > 0
+        window.screen.width >= 1600 &&
+        this.menu.catalogs &&
+        this.menu.catalogs.length > 0
     ) {
       this.asideWidth = '300px'
       this.menuMarginLeft = 'menu-margin-left2'
@@ -185,9 +185,11 @@ export default {
   margin-top: -20px;
   height: calc(100% - 90px);
 }
+
 .menu-margin-left1 {
   margin-left: -273px;
 }
+
 .menu-margin-left2 {
   margin-left: -323px;
 }
@@ -216,19 +218,23 @@ export default {
   height: 46px;
   line-height: 46px;
 }
+
 .el-submenu .el-menu-item {
   height: 40px;
   line-height: 40px;
 }
+
 .el-menu-item {
   line-height: 40px;
   height: 40px;
   font-size: 12px;
 }
+
 .el-menu-item [class^='el-icon-'] {
   font-size: 17px;
   margin-bottom: 4px;
 }
+
 .el-submenu__title img {
   width: 14px;
   cursor: pointer;
@@ -236,6 +242,7 @@ export default {
   margin-right: 10px;
   margin-bottom: 4px;
 }
+
 .search-box {
   padding: 0px 20px 0px 20px;
   box-sizing: border-box;
@@ -245,6 +252,7 @@ export default {
 .hide-scrollbar ::-webkit-scrollbar {
   display: none;
 }
+
 /*隐藏滚动条*/
 .hide-scrollbar {
   -ms-overflow-style: none;
@@ -258,7 +266,7 @@ export default {
   position: fixed;
 }
 </style>
-<style type="text/css">
+<style type='text/css'>
 #left-side-menu .el-input__inner {
   background-color: #fafafa !important;
   padding-right: 10px;
@@ -270,6 +278,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .hide-scrollbar li {
   /* white-space: normal;*/
   overflow: hidden;
@@ -279,6 +288,7 @@ export default {
 .normal-scrollbar .el-submenu__title {
   font-size: 12px;
 }
+
 .normal-scrollbar li {
   font-size: 12px;
 }
