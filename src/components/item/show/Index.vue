@@ -34,11 +34,12 @@ export default {
       }
       const that = this
       let loading = that.$loading()
-      projectAll(this.$route.params.item_id).then(res => {
+      const id = that.$route.params.item_id
+      projectAll(id).then(res => {
         loading.close()
         that.item_info = res
         that.$store.dispatch('changeItemInfo', res)
-        document.title = that.item_info.projectName + '--ShowDoc'
+        document.title = that.item_info.projectName
       }).catch(err => {
         loading.close()
         that.$alert(err.msg)

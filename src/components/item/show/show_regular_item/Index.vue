@@ -29,12 +29,6 @@
                 v-show='showfullPageBtn'
                 @click='clickFullPage'
             ></i>
-            <i
-                class='el-icon-upload item'
-                id='attachment'
-                v-if='attachment_count'
-                @click='ShowAttachment'
-            ></i>
           </div>
           <div id='doc-body'>
             <div id='page_md_content' class='page_content_main'>
@@ -43,17 +37,17 @@
           </div>
         </div>
 
-        <!--        <OpBar-->
-        <!--            :page_id='page_id'-->
-        <!--            :item_id='item_info.item_id'-->
-        <!--            :item_info='item_info'-->
-        <!--            :page_info='page_info'-->
-        <!--        ></OpBar>-->
+        <OpBar
+            :page_id='page_id'
+            :item_id='item_info.pid'
+            :item_info='item_info'
+            :page_info='page_info'
+        ></OpBar>
       </div>
     </div>
 
     <BackToTop></BackToTop>
-    <Toc></Toc>
+<!--    <Toc></Toc>-->
 
   </div>
 </template>
@@ -65,8 +59,8 @@ import BackToTop from '@/components/common/BackToTop'
 import Toc from '@/components/item/show/show_regular_item/Toc'
 import LeftMenu from '@/components/item/show/show_regular_item/LeftMenu'
 import OpBar from '@/components/item/show/show_regular_item/OpBar'
-import AttachmentList from '@/components/page/edit/AttachmentList'
 import { rederPageContent } from '@/models/page'
+import { itemInfo } from '@/api/api'
 
 export default {
   props: {
@@ -84,7 +78,6 @@ export default {
       qr_item_link: '',
       page_info: '',
       copyText: '',
-      attachment_count: '',
       fullPage: false,
       showfullPageBtn: false,
       showToc: true,
@@ -96,47 +89,35 @@ export default {
     LeftMenu,
     OpBar,
     BackToTop,
-    Toc,
-    AttachmentList
+    Toc
   },
   methods: {
     // 获取页面内容
     get_page_content(id) {
-      console.log(id)
-      this.adaptScreen()
-      // let that = this
-      // this.request('/api/page/info', {
-      //   'page_id': page_id
-      // }, 'post', false).then((data) => {
-      //   // loading.close();
-      //   if (data.error_code === 0) {
-      //     that.content = rederPageContent(data.data.page_content, that.$store.state.item_info.global_param)
-      //
-      //     that.page_title = data.data.page_title
-      //     that.page_info = data.data
-      //     that.attachment_count =
-      //         data.data.attachment_count > 0
-      //             ? data.data.attachment_count
-      //             : ''
-      //     // 切换变量让它重新加载、渲染子组件
-      //     that.page_id = 0
-      //     that.item_info.default_page_id = page_id
-      //     that.$nextTick(() => {
-      //       that.page_id = page_id
-      //       // 页面回到顶部
-      //       document.body.scrollTop = document.documentElement.scrollTop = 0
-      //       document.title = that.page_title + '--ShowDoc'
-      //     })
-      //   } else {
-      //     // that.$alert(data.error_message);
-      //   }
-      // })
+      let that = this
+      that.adaptScreen()
+      itemInfo(id).then(res => {
+        const { name, context } = res
+        that.content = rederPageContent(context)
+        that.page_title = name
+        that.page_info = res
+        // // 切换变量让它重新加载、渲染子组件
+        that.page_id = 0
+        that.item_info.default_page_id = id
+        that.$nextTick(() => {
+          that.page_id = id
+          // 页面回到顶部
+          document.body.scrollTop = document.documentElement.scrollTop = 0
+          document.title = that.page_title
+        })
+      }).catch(err => {
+        that.$alert(err.msg)
+      })
     },
     // 根据屏幕宽度进行响应(应对移动设备的访问)
     adaptToMobile() {
       let childRef = this.$refs.leftMenu // 获取子组件
       childRef.hide_menu()
-      this.show_page_bar = false
       let doc_container = document.getElementById('doc-container')
       doc_container.style.width = '95%'
       doc_container.style.padding = '5px'
@@ -173,10 +154,6 @@ export default {
     onCopy() {
       this.$message(this.$t('copy_success'))
     },
-    ShowAttachment() {
-      let childRef = this.$refs.AttachmentList // 获取子组件
-      childRef.show()
-    },
     clickFullPage() {
       // 点击放大页面。由于历史包袱，只能操作dom。这是不规范的，但是现在没时间重构整块页面
       if (this.fullPage) {
@@ -188,7 +165,7 @@ export default {
       } else {
         this.adaptToMobile()
         // 切换变量让它重新加载、渲染子组件
-        let page_id = this.page_id
+        const page_id = this.page_id
         this.page_id = 0
         this.$nextTick(() => {
           this.page_id = page_id

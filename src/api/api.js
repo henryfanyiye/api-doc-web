@@ -82,3 +82,4 @@ export const updateProject = (id, data) => post(`/api/project/project/update/${i
 export const deleteProject = (id) => del(`/api/project/project/${id}`)
 export const attornProject = (data) => post('/api/project/project/attorn', data)
 export const projectAll = (id) => get(`/api/project/${id}`)
+export const itemInfo = (id) => get(`/api/project/item/${id}`)

@@ -81,24 +81,12 @@ export default {
       this.change_url(index)
       this.get_page_content(index)
     },
-    new_page() {
-      var url = '/page/edit/' + this.item_info.item_id + '/0'
-      this.$router.push({ path: url })
-    },
-
-    mamage_catalog() {
-      var url = '/catalog/' + this.item_info.item_id
-      this.$router.push({ path: url })
-    },
-
     // 改变url
     change_url(id) {
       if (id == this.$route.query.id) {
         return
       }
-      const domain = this.item_info.item_domain
-          ? this.item_info.item_domain
-          : this.item_info.item_id
+      const domain = this.item_info.pid
       this.$router.replace({
         path: '/' + domain,
         query: { id }
@@ -110,7 +98,7 @@ export default {
     },
     show_menu() {
       this.show_menu_btn = false
-      var element = document.getElementById('left-side-menu')
+      let element = document.getElementById('left-side-menu')
       element.style.display = 'block'
       element.style.marginLeft = '0px'
       element.style.marginTop = '0px'
@@ -120,7 +108,7 @@ export default {
     },
     hide_menu() {
       this.show_menu_btn = true
-      var element = document.getElementById('left-side-menu')
+      let element = document.getElementById('left-side-menu')
       element.style.display = 'none'
       element = document.getElementById('p-content')
       element.style.marginLeft = '0px'
@@ -131,32 +119,33 @@ export default {
   },
   mounted() {
     const that = this
+    let item_info = that.item_info
     that.menu = that.item_info
     // 默认展开页面
-    // if (item_info.default_page_id > 0) {
-    //   that.select_menu(item_info.default_page_id)
-    //   if (item_info.default_cat_id4) {
-    //     that.openeds = [
-    //       item_info.default_cat_id4,
-    //       item_info.default_cat_id3,
-    //       item_info.default_cat_id2,
-    //       item_info.default_page_id
-    //     ]
-    //   } else if (item_info.default_cat_id3) {
-    //     that.openeds = [
-    //       item_info.default_cat_id3,
-    //       item_info.default_cat_id2,
-    //       item_info.default_page_id
-    //     ]
-    //   } else if (item_info.default_cat_id2) {
-    //     that.openeds = [item_info.default_cat_id2, item_info.default_page_id]
-    //   }
-    //   // 延迟把左侧栏滚动到默认展开的那个页面
-    //   setTimeout(() => {
-    //     const element = document.querySelector('#left_page_' + item_info.default_page_id)
-    //     element.scrollIntoView()
-    //   }, 1000)
-    // }
+    if (item_info.default_page_id > 0) {
+      that.select_menu(item_info.default_page_id)
+      if (item_info.default_cat_id4) {
+        that.openeds = [
+          item_info.default_cat_id4,
+          item_info.default_cat_id3,
+          item_info.default_cat_id2,
+          item_info.default_page_id
+        ]
+      } else if (item_info.default_cat_id3) {
+        that.openeds = [
+          item_info.default_cat_id3,
+          item_info.default_cat_id2,
+          item_info.default_page_id
+        ]
+      } else if (item_info.default_cat_id2) {
+        that.openeds = [item_info.default_cat_id2, item_info.default_page_id]
+      }
+      // 延迟把左侧栏滚动到默认展开的那个页面
+      setTimeout(() => {
+        const element = document.querySelector('#left_page_' + item_info.default_page_id)
+        element.scrollIntoView()
+      }, 1000)
+    }
 
     // 如果是大屏幕且存在目录，则把侧边栏调大
     if (
