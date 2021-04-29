@@ -14,10 +14,12 @@
     "test:ci": "npm run lint && npm run test:unit"
   },
   "dependencies": {
+    "@liradb2000/markdown-it-mermaid": "^0.4.2",
     "axios": "0.18.1",
     "core-js": "3.6.5",
     "element-ui": "2.13.2",
     "js-cookie": "2.2.0",
+    "mavon-editor": "^2.9.1",
     "nanoid": "^3.1.22",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",

@@ -1,4 +1,9 @@
 import Vue from 'vue'
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
+import markdownItMermaid from '@liradb2000/markdown-it-mermaid'
+
+mavonEditor.markdownIt.use(markdownItMermaid)
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
@@ -34,6 +39,8 @@ Vue.use(ElementUI, { locale })
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false
+
+Vue.use(mavonEditor)
 
 new Vue({
   el: '#app',

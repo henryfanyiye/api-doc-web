@@ -1,9 +1,16 @@
-import { detail } from '@/api/project'
+import { projectDetail, apiDetail } from '@/api/project'
 
 const actions = {
   // Project api list
-  async detail({}, id) {
-    return await detail(id).then(response => {
+  async projectDetail({}, id) {
+    return await projectDetail(id).then(response => {
+      const { data } = response
+      return data
+    })
+  },
+
+  async apiDetail({}, id) {
+    return await apiDetail(id).then(response => {
       const { data } = response
       return data
     })
