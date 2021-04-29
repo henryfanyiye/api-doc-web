@@ -1,14 +1,14 @@
-import request from "@/utils/request";
+import request from '@/utils/request'
 
 /**
  * Register new user
  */
 export function register(data) {
   return request({
-    url: "/api/user/register",
-    method: "post",
+    url: '/api/user/register',
+    method: 'post',
     data
-  });
+  })
 }
 
 /**
@@ -16,10 +16,10 @@ export function register(data) {
  */
 export function login(data) {
   return request({
-    url: "/api/user/login",
-    method: "post",
+    url: '/api/user/login',
+    method: 'post',
     data
-  });
+  })
 }
 
 /**
@@ -27,9 +27,9 @@ export function login(data) {
  */
 export function detail() {
   return request({
-    url: "/api/user/detail",
-    method: "get"
-  });
+    url: '/api/user/detail',
+    method: 'get'
+  })
 }
 
 /**
@@ -37,12 +37,12 @@ export function detail() {
  */
 export function projectList(is_delete) {
   return request({
-    url: "/api/user/project/list",
-    method: "get",
+    url: '/api/user/project/list',
+    method: 'get',
     params: {
       is_delete
     }
-  });
+  })
 }
 
 /**
@@ -50,7 +50,7 @@ export function projectList(is_delete) {
  */
 export function logout() {
   return request({
-    url: "/api/user/logout",
-    method: "get"
-  });
+    url: '/api/user/logout',
+    method: 'get'
+  })
 }

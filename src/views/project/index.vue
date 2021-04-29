@@ -8,19 +8,43 @@
           </el-card>
         </div>
       </el-col>
+      <el-col :xs='12' :sm='12' :lg='6' class='card-panel-col'>
+        <el-upload
+            list-type='picture-card'
+            :headers='headers'
+            :action='action'
+            :multiple='false'
+            :show-file-list='false'
+            :before-upload='addHeaders'
+            :on-success='getProjectList'
+        >
+          <i slot='default' class='el-icon-plus'></i>
+        </el-upload>
+      </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
 
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'Project',
   data() {
     return {
       currentDate: new Date(),
-      projectList: []
+      projectList: [],
+      action: process.env.VUE_APP_BASE_API + '/api/postman/upload',
+      headers: {
+        'Authorization': ''
+      }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'token'
+    ])
   },
   beforeMount() {
     this.getProjectList()
@@ -32,7 +56,10 @@ export default {
       })
     },
     toProjectDetail(id) {
-      this.$router.push({ name: 'ProjectDetail', query: { id } })
+      this.$router.push({ name: 'Project Detail', query: { id } })
+    },
+    addHeaders() {
+      this.headers.Authorization = 'Bearer ' + this.token
     }
   }
 }
@@ -52,5 +79,9 @@ export default {
   width: 90%;
   text-align: center;
   cursor: pointer;
+}
+
+el-upload {
+  width: 100%;
 }
 </style>
