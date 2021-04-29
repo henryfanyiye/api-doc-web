@@ -3,8 +3,10 @@
     <el-row :gutter='24'>
       <el-col :xs='12' :sm='12' :lg='6' class='card-panel-col' v-for='item in projectList' :key='item.projectId'>
         <div class='box-card' @click='toProjectDetail(item.projectId)'>
-          <el-card>
-            <h1>{{ item.projectName }}</h1>
+          <el-card shadow='hover'>
+            <h3>{{ item.projectName }}</h3>
+            <i class='el-icon-setting'></i>
+            <i class='el-icon-lock'></i>
           </el-card>
         </div>
       </el-col>
@@ -26,8 +28,8 @@
 </template>
 
 <script>
-
 import { mapGetters } from 'vuex'
+import { projectList } from '@/api/user'
 
 export default {
   name: 'Project',
@@ -51,8 +53,8 @@ export default {
   },
   methods: {
     getProjectList() {
-      this.$store.dispatch('user/projectList', 0).then(data => {
-        this.projectList = data
+      projectList(0).then(res => {
+        this.projectList = res.data
       })
     },
     toProjectDetail(id) {
@@ -81,7 +83,4 @@ export default {
   cursor: pointer;
 }
 
-el-upload {
-  width: 100%;
-}
 </style>

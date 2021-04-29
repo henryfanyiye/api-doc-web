@@ -2,6 +2,7 @@
   <el-row :gutter='20'>
     <el-col :span='4'>
       <el-tree
+          class='filter-tree'
           :data='data'
           :props='defaultProps'
           :highlight-current='true'
@@ -16,7 +17,8 @@
             :defaultOpen='defaultOpen'
             :toolbarsFlag='toolbarsFlag'
             :subfield='subfield'
-            value='选择接口查看文档' />
+            :codeStyle='codeStyle'
+            v-model='content' />
 
         <mavon-editor
             v-show='!show'
@@ -24,7 +26,6 @@
             :toolbarsFlag='toolbarsFlag'
             :tabSize='tabSize'
             v-model='content'
-            @change='change'
             @save='save' />
       </div>
     </el-col>
@@ -32,6 +33,8 @@
 </template>
 
 <script>
+import { apiDetail, projectDetail } from '@/api/project'
+
 export default {
   name: 'ProjectDetail',
   data() {
@@ -65,28 +68,55 @@ export default {
       subfield: false, // true： 双栏(编辑预览同屏)， false： 单栏(编辑预览分屏)
       defaultOpen: 'preview', // edit：默认展示编辑区域,preview：默认展示预览区域
       toolbarsFlag: false, // 工具栏是否显示
+      codeStyle: 'codeStyle',
       content: ''
     }
   },
   beforeMount() {
     if (this.$route.query.id) {
-      this.$store.dispatch('project/projectDetail', this.$route.query.id).then(res => {
-        this.data = res
+      projectDetail(this.$route.query.id).then(res => {
+        this.data = res.data
       })
     }
   },
   methods: {
     handleNodeClick(data) {
       if (data.type === 'api') {
-        // this.$router.push({ name: 'Markdown', query: { id: data.id } })
-        this.$store.dispatch('project/apiDetail', data.id).then(res => {
-          this.content = JSON.stringify(res)
-          this.show = false
+        apiDetail(data.id).then(res => {
+          let { title, method, url, header, path, query, body_type, body } = res.data
+          let req = '|Name|Type|Data Type|Description|Required|\n' +
+              '|--|--|--|--|--|--|\n'
+
+          header = JSON.parse(header)
+          for (const i in header) {
+            req += `|${header[i].key}|header|string|${header[i].value}|Y|\n`
+          }
+
+          path = JSON.parse(path)
+          for (const i in path) {
+            req += `|${path[i].key}|path|string|${path[i].value}|Y|\n`
+          }
+
+          query = JSON.parse(query)
+          for (const i in query) {
+            req += `|${query[i].key}|query|string|${query[i].value}|Y|\n`
+          }
+
+          this.content = `# ${title}\n` +
+              `**Method：** \`${method}\`\n` +
+              `**Path：** \`${url}\`\n` +
+              `**Description：**\n` +
+              `**Request Parameters：**\n${req}`
+
+          if (body) {
+            this.content += '**Request Body：**\n' +
+                '```\n' +
+                `${body}\n` +
+                '```\n'
+          }
+          // this.show = false
         })
       }
-    },
-    change(value) {
-      // console.log(value)
     },
     save(value) {
       console.log(value)
