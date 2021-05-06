@@ -1,125 +1,110 @@
 <template>
-  <el-row :gutter='20'>
-    <el-col :span='4'>
+  <el-row :gutter='20' v-loading='loading'>
+    <button type='primary' @click='editContent'>{{ btnName }}</button>
+    <el-col :span='5'>
       <el-tree
           class='filter-tree'
           :data='data'
           :props='defaultProps'
-          :highlight-current='true'
+          highlight-current
           accordion
-          @node-click='handleNodeClick'>
+          draggable
+          @node-click='handleNodeClick'
+          @node-drag-end='handleDragEnd'
+      >
       </el-tree>
     </el-col>
-    <el-col :span='20'>
-      <div id='editor-main'>
-        <mavon-editor
-            v-show='show'
-            :defaultOpen='defaultOpen'
-            :toolbarsFlag='toolbarsFlag'
-            :subfield='subfield'
-            :codeStyle='codeStyle'
-            v-model='content' />
+    <el-col :span='19'>
+      <div id='edit' v-show='edit'></div>
 
-        <mavon-editor
-            v-show='!show'
-            :toolbars='toolbars'
-            :toolbarsFlag='toolbarsFlag'
-            :tabSize='tabSize'
-            v-model='content'
-            @save='save' />
+      <div class='preview-container'>
+        <div id='preview' v-show='!edit' />
       </div>
     </el-col>
   </el-row>
 </template>
 
 <script>
+import Vditor from 'vditor'
+import 'vditor/dist/index.css'
 import { apiDetail, projectDetail } from '@/api/project'
 
 export default {
   name: 'ProjectDetail',
   data() {
     return {
-      show: true,
+      edit: false,
+      btnName: 'Edit',
       data: [],
       defaultProps: {
         label: 'name',
         children: 'items'
       },
-      toolbars: {
-        header: true, // 标题
-        bold: true, // 粗体
-        italic: true, // 斜体
-        underline: true, // 下划线
-        strikethrough: true, // 中划线
-        ol: true, // 有序列表
-        ul: true, // 无序列表
-        code: true, // code
-        table: true, // 表格
-        undo: true, // 上一步
-        redo: true, // 下一步
-        trash: true, // 清空
-        save: true, // 保存（触发events中的save事件）
-        preview: true, // 预览
-        subfield: true, // true： 双栏(编辑预览同屏)， false： 单栏(编辑预览分屏)
-        fullscreen: true, // 全屏编辑
-        readmodel: true // 沉浸式阅读
-      },
-      tabSize: 4, // tab转化为几个空格，默认为\t
-      subfield: false, // true： 双栏(编辑预览同屏)， false： 单栏(编辑预览分屏)
-      defaultOpen: 'preview', // edit：默认展示编辑区域,preview：默认展示预览区域
-      toolbarsFlag: false, // 工具栏是否显示
-      codeStyle: 'codeStyle',
-      content: ''
+      loading: false,
+      contentEditor: ''
     }
+  },
+  mounted() {
+    const that = this
+    this.contentEditor = new Vditor('edit', {
+      toolbar: [
+        'headings', 'bold', 'italic', 'strike', '|',
+        'list', 'ordered-list', '|',
+        'line', 'code', 'inline-code', 'table', '|',
+        'undo', 'redo', '|',
+        'fullscreen', 'edit-mode', 'preview',
+        {
+          name: 'save',
+          tipPosition: 'n',
+          tip: '保存',
+          icon: '<svg t="1619767395575" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1289" width="200" height="200"><path d="M426.666667 128h-149.333334v234.453333c0 12.074667 9.450667 21.546667 21.205334 21.546667h298.922666c11.626667 0 21.205333-9.6 21.205334-21.546667V128h-64v149.504c0 23.466667-19.157333 42.496-42.624 42.496h-42.752A42.666667 42.666667 0 0 1 426.666667 277.504V128zM192 896V661.546667C192 602.474667 239.786667 554.666667 298.837333 554.666667h426.325334A106.709333 106.709333 0 0 1 832 661.546667V896h42.517333A21.312 21.312 0 0 0 896 874.752V273.664L750.336 128H704v234.453333c0 58.965333-47.701333 106.88-106.538667 106.88H298.538667A106.56 106.56 0 0 1 192 362.453333V128H149.248A21.269333 21.269333 0 0 0 128 149.482667v725.034666C128 886.421333 137.578667 896 149.482667 896H192zM42.666667 149.482667A106.602667 106.602667 0 0 1 149.248 42.666667H768a42.666667 42.666667 0 0 1 30.165333 12.501333l170.666667 170.666667A42.666667 42.666667 0 0 1 981.333333 256v618.752A106.645333 106.645333 0 0 1 874.517333 981.333333H149.482667A106.752 106.752 0 0 1 42.666667 874.517333V149.482667z m704 512.042666c0-12.010667-9.536-21.525333-21.504-21.525333H298.837333C286.933333 640 277.333333 649.6 277.333333 661.546667V896h469.333334V661.546667z" fill="#000000" p-id="1290"></path></svg>',
+          click() {
+            that.save()
+          }
+        }
+      ],
+      tab: '\t',
+      mode: 'sv',
+      preview: {
+        actions: []
+      },
+      cache: {
+        enable: false
+      }
+    })
   },
   beforeMount() {
     if (this.$route.query.id) {
+      this.loading = true
       projectDetail(this.$route.query.id).then(res => {
         this.data = res.data
+        this.loading = false
       })
     }
   },
   methods: {
     handleNodeClick(data) {
       if (data.type === 'api') {
+        this.loading = true
         apiDetail(data.id).then(res => {
-          let { title, method, url, header, path, query, body_type, body } = res.data
-          let req = '|Name|Type|Data Type|Description|Required|\n' +
-              '|--|--|--|--|--|--|\n'
-
-          header = JSON.parse(header)
-          for (const i in header) {
-            req += `|${header[i].key}|header|string|${header[i].value}|Y|\n`
-          }
-
-          path = JSON.parse(path)
-          for (const i in path) {
-            req += `|${path[i].key}|path|string|${path[i].value}|Y|\n`
-          }
-
-          query = JSON.parse(query)
-          for (const i in query) {
-            req += `|${query[i].key}|query|string|${query[i].value}|Y|\n`
-          }
-
-          this.content = `# ${title}\n` +
-              `**Method：** \`${method}\`\n` +
-              `**Path：** \`${url}\`\n` +
-              `**Description：**\n` +
-              `**Request Parameters：**\n${req}`
-
-          if (body) {
-            this.content += '**Request Body：**\n' +
-                '```\n' +
-                `${body}\n` +
-                '```\n'
-          }
-          // this.show = false
+          this.contentEditor.setValue(res.data.markdown)
+          Vditor.preview(document.getElementById('preview'), res.data.markdown)
+          this.edit = false
+          this.btnName = 'Edit'
+          this.loading = false
         })
       }
     },
-    save(value) {
-      console.log(value)
+    editContent() {
+      this.edit = !this.edit
+      this.btnName = this.edit ? 'Preview' : 'Edit'
+    },
+    handleDragEnd(draggingNode, dropNode, dropType, ev) {
+      console.log('tree drag end: ', dropNode && dropNode.label, dropType)
+    },
+    save() {
+      this.edit = !this.edit
+      this.btnName = this.edit ? 'Preview' : 'Edit'
     }
   }
 }
@@ -127,6 +112,18 @@ export default {
 
 <style>
 .el-row {
-  padding: 30px;
+  padding-top: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.preview-container {
+  background-color: #fff;
+  width: 100%;
+}
+
+#preview {
+  width: 94%;
+  margin: auto;
 }
 </style>

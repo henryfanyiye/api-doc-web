@@ -1,6 +1,6 @@
 <template>
   <div class='project-container'>
-    <el-row :gutter='24'>
+    <el-row :gutter='24' v-loading='loading'>
       <el-col :xs='12' :sm='12' :lg='6' class='card-panel-col' v-for='item in projectList' :key='item.projectId'>
         <div class='box-card' @click='toProjectDetail(item.projectId)'>
           <el-card shadow='hover'>
@@ -40,7 +40,8 @@ export default {
       action: process.env.VUE_APP_BASE_API + '/api/postman/upload',
       headers: {
         'Authorization': ''
-      }
+      },
+      loading: false
     }
   },
   computed: {
@@ -53,8 +54,10 @@ export default {
   },
   methods: {
     getProjectList() {
+      this.loading = true
       projectList(0).then(res => {
         this.projectList = res.data
+        this.loading = false
       })
     },
     toProjectDetail(id) {
