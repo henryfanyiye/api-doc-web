@@ -1,6 +1,5 @@
 <template>
   <el-row :gutter='20' v-loading='loading'>
-    <button type='primary' @click='editContent'>{{ btnName }}</button>
     <el-col :span='5'>
       <el-tree
           class='filter-tree'
@@ -8,26 +7,41 @@
           :props='defaultProps'
           highlight-current
           accordion
-          draggable
           @node-click='handleNodeClick'
-          @node-drag-end='handleDragEnd'
       >
+        <span slot-scope='{ node, data }'>
+          <span>
+            <i :class='data.type==="catalog"?"el-icon-folder":"el-icon-document"'></i> {{ node.label }}
+          </span>
+        </span>
       </el-tree>
     </el-col>
-    <el-col :span='19'>
-      <div id='edit' v-show='edit'></div>
-
-      <div class='preview-container'>
-        <div id='preview' v-show='!edit' />
-      </div>
+    <el-col :span='14'>
+      <Show v-show='!edit' :content='content' />
+      <Edit v-show='edit' :content='content' />
+    </el-col>
+    <el-col :span='5'>
+      <el-dropdown v-if='content'>
+        <span class='el-dropdown-link'>
+          更多<i class='el-icon-arrow-down el-icon--right' />
+        </span>
+        <el-dropdown-menu slot='dropdown'>
+          <el-dropdown-item icon='el-icon-plus'>新增</el-dropdown-item>
+          <el-dropdown-item icon='el-icon-edit' @click.native='editContent'>编辑</el-dropdown-item>
+          <el-dropdown-item icon='el-icon-share'>分享</el-dropdown-item>
+          <el-dropdown-item icon='el-icon-delete'>删除</el-dropdown-item>
+          <el-dropdown-item icon='el-icon-download'>下载</el-dropdown-item>
+          <el-dropdown-item icon='el-icon-setting'>设置</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </el-col>
   </el-row>
 </template>
 
 <script>
-import Vditor from 'vditor'
-import 'vditor/dist/index.css'
 import { apiDetail, projectDetail } from '@/api/project'
+import Show from './show'
+import Edit from './edit'
 
 export default {
   name: 'ProjectDetail',
@@ -38,40 +52,16 @@ export default {
       data: [],
       defaultProps: {
         label: 'name',
+        type: 'type',
         children: 'items'
       },
       loading: false,
-      contentEditor: ''
+      content: null
     }
   },
-  mounted() {
-    const that = this
-    this.contentEditor = new Vditor('edit', {
-      toolbar: [
-        'headings', 'bold', 'italic', 'strike', '|',
-        'list', 'ordered-list', '|',
-        'line', 'code', 'inline-code', 'table', '|',
-        'undo', 'redo', '|',
-        'fullscreen', 'edit-mode', 'preview',
-        {
-          name: 'save',
-          tipPosition: 'n',
-          tip: '保存',
-          icon: '<svg t="1619767395575" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1289" width="200" height="200"><path d="M426.666667 128h-149.333334v234.453333c0 12.074667 9.450667 21.546667 21.205334 21.546667h298.922666c11.626667 0 21.205333-9.6 21.205334-21.546667V128h-64v149.504c0 23.466667-19.157333 42.496-42.624 42.496h-42.752A42.666667 42.666667 0 0 1 426.666667 277.504V128zM192 896V661.546667C192 602.474667 239.786667 554.666667 298.837333 554.666667h426.325334A106.709333 106.709333 0 0 1 832 661.546667V896h42.517333A21.312 21.312 0 0 0 896 874.752V273.664L750.336 128H704v234.453333c0 58.965333-47.701333 106.88-106.538667 106.88H298.538667A106.56 106.56 0 0 1 192 362.453333V128H149.248A21.269333 21.269333 0 0 0 128 149.482667v725.034666C128 886.421333 137.578667 896 149.482667 896H192zM42.666667 149.482667A106.602667 106.602667 0 0 1 149.248 42.666667H768a42.666667 42.666667 0 0 1 30.165333 12.501333l170.666667 170.666667A42.666667 42.666667 0 0 1 981.333333 256v618.752A106.645333 106.645333 0 0 1 874.517333 981.333333H149.482667A106.752 106.752 0 0 1 42.666667 874.517333V149.482667z m704 512.042666c0-12.010667-9.536-21.525333-21.504-21.525333H298.837333C286.933333 640 277.333333 649.6 277.333333 661.546667V896h469.333334V661.546667z" fill="#000000" p-id="1290"></path></svg>',
-          click() {
-            that.save()
-          }
-        }
-      ],
-      tab: '\t',
-      mode: 'sv',
-      preview: {
-        actions: []
-      },
-      cache: {
-        enable: false
-      }
-    })
+  components: {
+    Show,
+    Edit
   },
   beforeMount() {
     if (this.$route.query.id) {
@@ -84,27 +74,18 @@ export default {
   },
   methods: {
     handleNodeClick(data) {
+      const that = this
       if (data.type === 'api') {
-        this.loading = true
+        that.loading = true
         apiDetail(data.id).then(res => {
-          this.contentEditor.setValue(res.data.markdown)
-          Vditor.preview(document.getElementById('preview'), res.data.markdown)
-          this.edit = false
-          this.btnName = 'Edit'
-          this.loading = false
+          that.content = res.data.markdown
+          that.edit = false
+          that.loading = false
         })
       }
     },
     editContent() {
       this.edit = !this.edit
-      this.btnName = this.edit ? 'Preview' : 'Edit'
-    },
-    handleDragEnd(draggingNode, dropNode, dropType, ev) {
-      console.log('tree drag end: ', dropNode && dropNode.label, dropType)
-    },
-    save() {
-      this.edit = !this.edit
-      this.btnName = this.edit ? 'Preview' : 'Edit'
     }
   }
 }
@@ -112,18 +93,6 @@ export default {
 
 <style>
 .el-row {
-  padding-top: 40px;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.preview-container {
-  background-color: #fff;
-  width: 100%;
-}
-
-#preview {
-  width: 94%;
-  margin: auto;
+  padding: 20px;
 }
 </style>
