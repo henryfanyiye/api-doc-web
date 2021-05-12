@@ -9,11 +9,10 @@ import Vditor from 'vditor'
 import 'vditor/dist/index.css'
 
 export default {
-  name: 'ProjectShow',
-  data() {
-    return {}
+  name: 'Preview',
+  props: {
+    content: String
   },
-  props: ['content'],
   watch: {
     content() {
       if (this.content) {

@@ -13,3 +13,11 @@ export function apiDetail(id) {
     method: 'get'
   })
 }
+
+export function updateItem(id, data) {
+  return request({
+    url: `/api/project/item/update/${id}`,
+    method: 'post',
+    data
+  })
+}

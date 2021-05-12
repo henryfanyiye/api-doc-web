@@ -23,7 +23,6 @@ service.interceptors.request.use(
   },
   error => {
     // do something with request error
-    console.log(error) // for debug
     return Promise.reject(error)
   }
 )
@@ -62,20 +61,9 @@ service.interceptors.response.use(
       duration: 5 * 1000
     })
     // 401
-    if (error.code === 401) {
-      // to re-login
-      MessageBox.confirm(
-        'You have been logged out, you can cancel to stay on this page, or log in again',
-        'Confirm logout',
-        {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }
-      ).then(() => {
-        store.dispatch('user/resetToken').then(() => {
-          location.reload()
-        })
+    if (error.response.status === 401) {
+      store.dispatch('user/resetToken').then(() => {
+        location.reload()
       })
     }
     return Promise.reject(error)

@@ -48,17 +48,40 @@ export const constantRoutes = [
         path: 'project',
         name: 'Project',
         component: () => import('@/views/project/index'),
-        meta: { title: 'Project', icon: 'dashboard' }
+        meta: { title: 'Project', icon: 'el-icon-menu' }
       },
       {
         path: '/project/detail',
         name: 'Project Detail',
         component: () => import('@/views/project/detail'),
-        meta: { title: 'Project Detail', icon: 'dashboard' },
+        meta: { title: 'Project Detail' },
         hidden: true
       }
     ]
   },
+
+  {
+    path: '/project/edit',
+    name: 'Project Edit',
+    component: () => import('@/views/project/edit'),
+    meta: { title: 'Project Edit' },
+    hidden: true
+  },
+
+  // {
+  //   path: '/environments',
+  //   component: Layout,
+  //   name: 'Environments',
+  //   meta: { title: 'Environments', icon: 'el-icon-s-operation' },
+  //   children: [
+  //     {
+  //       path: 'environments',
+  //       name: 'Environments',
+  //       component: () => import('@/views/environment/index'),
+  //       meta: { title: 'Environments', icon: 'el-icon-s-operation' }
+  //     }
+  //   ]
+  // },
 
   {
     path: '/404',
