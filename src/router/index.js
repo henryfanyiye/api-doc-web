@@ -1,146 +1,111 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from '@/components/Index'
-import UserLogin from '@/components/user/Login'
-import UserSetting from '@/components/user/Setting'
-import UserRegister from '@/components/user/Register'
-import UserResetPassword from '@/components/user/ResetPassword'
-import ResetPasswordByUrl from '@/components/user/ResetPasswordByUrl'
-import ItemIndex from '@/components/item/Index'
-import ItemAdd from '@/components/item/add/Index'
-import ItemPassword from '@/components/item/Password'
-import ItemShow from '@/components/item/show/Index'
-import ItemExport from '@/components/item/export/Index'
-import ItemSetting from '@/components/item/setting/Index'
-import PageIndex from '@/components/page/Index'
-import PageEdit from '@/components/page/edit/Index'
-import PageDiff from '@/components/page/Diff'
-import Catalog from '@/components/catalog/Index'
-import Notice from '@/components/notice/Index'
-import Admin from '@/components/admin/Index'
-import Team from '@/components/team/Index'
-import TeamMember from '@/components/team/Member'
-import TeamItem from '@/components/team/Item'
-import Attachment from '@/components/attachment/Index'
 
 Vue.use(Router)
 
-export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'Index',
-      component: Index
-    },
-    {
-      path: '/user/login',
-      name: 'UserLogin',
-      component: UserLogin
-    },
-    {
-      path: '/user/setting',
-      name: 'UserSetting',
-      component: UserSetting
-    },
-    {
-      path: '/user/register',
-      name: 'UserRegister',
-      component: UserRegister
-    },
-    {
-      path: '/user/resetPassword',
-      name: 'UserResetPassword',
-      component: UserResetPassword
-    },
-    {
-      path: '/user/ResetPasswordByUrl',
-      name: 'ResetPasswordByUrl',
-      component: ResetPasswordByUrl
-    },
-    {
-      path: '/item/index',
-      name: 'ItemIndex',
-      component: ItemIndex
-    },
-    {
-      path: '/item/add',
-      name: 'ItemAdd',
-      component: ItemAdd
-    },
-    {
-      path: '/item/password/:item_id',
-      name: 'ItemPassword',
-      component: ItemPassword
-    },
-    {
-      path: '/:item_id',
-      name: 'ItemShow',
-      component: ItemShow
-    },
-    {
-      path: '/item/export/:item_id',
-      name: 'ItemExport',
-      component: ItemExport
-    },
-    {
-      path: '/item/setting/:item_id',
-      name: 'ItemSetting',
-      component: ItemSetting
-    },
-    {
-      path: '/page/:page_id',
-      name: 'PageIndex',
-      component: PageIndex
-    },
-    {
-      path: '/p/:unique_key',
-      name: 'PageIndex',
-      component: PageIndex
-    },
-    {
-      path: '/page/edit/:item_id/:page_id',
-      name: 'PageEdit',
-      component: PageEdit
-    },
-    {
-      path: '/page/diff/:page_id/:page_history_id',
-      name: 'PageDiff',
-      component: PageDiff
-    },
-    {
-      path: '/catalog/:item_id',
-      name: 'Catalog',
-      component: Catalog
-    },
-    {
-      path: '/notice/index',
-      name: 'Notice',
-      component: Notice
-    },
-    {
-      path: '/admin/index',
-      name: 'Admin',
-      component: Admin
-    },
-    {
-      path: '/team/index',
-      name: 'Team',
-      component: Team
-    },
-    {
-      path: '/team/member/:team_id',
-      name: 'TeamMember',
-      component: TeamMember
-    },
-    {
-      path: '/team/item/:team_id',
-      name: 'TeamItem',
-      component: TeamItem
-    },
-    {
-      path: '/attachment/index',
-      name: 'Attachment',
-      component: Attachment
-    }
-  ]
-})
+/* Layout */
+import Layout from '@/layout'
+
+/**
+ * Note: sub-menu only appear when route children.length >= 1
+ * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
+ *
+ * hidden: true                   if set true, item will not show in the sidebar(default is false)
+ * alwaysShow: true               if set true, will always show the root menu
+ *                                if not set alwaysShow, when item has more than one children route,
+ *                                it will becomes nested mode, otherwise not show the root menu
+ * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
+ * name:'router-name'             the name is used by <keep-alive> (must set!!!)
+ * meta : {
+    roles: ['admin','editor']    control the page roles (you can set multiple roles)
+    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
+    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
+    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
+    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
+  }
+ */
+
+/**
+ * constantRoutes
+ * a base page that does not have permission requirements
+ * all roles can be accessed
+ */
+export const constantRoutes = [
+  {
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/project',
+    name: 'Project',
+    meta: { title: 'Project', icon: 'dashboard' },
+    children: [
+      {
+        path: 'project',
+        name: 'Project',
+        component: () => import('@/views/project/index'),
+        meta: { title: 'Project', icon: 'el-icon-menu' }
+      },
+      {
+        path: '/project/detail',
+        name: 'Project Detail',
+        component: () => import('@/views/project/detail'),
+        meta: { title: 'Project Detail' },
+        hidden: true
+      }
+    ]
+  },
+
+  {
+    path: '/project/edit',
+    name: 'Project Edit',
+    component: () => import('@/views/project/edit'),
+    meta: { title: 'Project Edit' },
+    hidden: true
+  },
+
+  // {
+  //   path: '/environments',
+  //   component: Layout,
+  //   name: 'Environments',
+  //   meta: { title: 'Environments', icon: 'el-icon-s-operation' },
+  //   children: [
+  //     {
+  //       path: 'environments',
+  //       name: 'Environments',
+  //       component: () => import('@/views/environment/index'),
+  //       meta: { title: 'Environments', icon: 'el-icon-s-operation' }
+  //     }
+  //   ]
+  // },
+
+  {
+    path: '/404',
+    component: () => import('@/views/error-page/404'),
+    hidden: true
+  },
+
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
+]
+
+const createRouter = () =>
+  new Router({
+    // mode: 'history', // require service support
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes
+  })
+
+const router = createRouter()
+
+// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
+
+export default router
