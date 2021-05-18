@@ -51,10 +51,10 @@ export const constantRoutes = [
         meta: { title: 'Project', icon: 'el-icon-menu' }
       },
       {
-        path: '/project/detail',
+        path: 'detail',
         name: 'Project Detail',
         component: () => import('@/views/project/detail'),
-        meta: { title: 'Project Detail' },
+        meta: { title: 'Detail' },
         hidden: true
       }
     ]
@@ -64,24 +64,31 @@ export const constantRoutes = [
     path: '/project/edit',
     name: 'Project Edit',
     component: () => import('@/views/project/edit'),
-    meta: { title: 'Project Edit' },
+    meta: { title: 'Edit' },
     hidden: true
   },
 
-  // {
-  //   path: '/environments',
-  //   component: Layout,
-  //   name: 'Environments',
-  //   meta: { title: 'Environments', icon: 'el-icon-s-operation' },
-  //   children: [
-  //     {
-  //       path: 'environments',
-  //       name: 'Environments',
-  //       component: () => import('@/views/environment/index'),
-  //       meta: { title: 'Environments', icon: 'el-icon-s-operation' }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/environment',
+    component: Layout,
+    name: 'Environment',
+    meta: { title: 'Environment', icon: 'el-icon-s-operation' },
+    children: [
+      {
+        path: '',
+        name: 'Environment',
+        component: () => import('@/views/environment/index'),
+        meta: { title: 'Environment', icon: 'el-icon-s-operation' }
+      },
+      {
+        path: 'detail',
+        name: 'Environment Detail',
+        component: () => import('@/views/environment/detail'),
+        meta: { title: 'Detail' },
+        hidden: true
+      }
+    ]
+  },
 
   {
     path: '/404',
