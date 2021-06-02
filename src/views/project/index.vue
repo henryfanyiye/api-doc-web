@@ -11,17 +11,11 @@
         </el-card>
       </el-col>
       <el-col :xs='12' :sm='12' :lg='6' class='card-panel-col'>
-        <el-upload
-            list-type='picture-card'
-            :headers='headers'
-            :action='action'
-            :multiple='false'
-            :show-file-list='false'
-            :before-upload='addHeaders'
-            :on-success='getProjectList'
-        >
-          <i slot='default' class='el-icon-plus'></i>
-        </el-upload>
+        <el-card shadow='hover' class='box-card'>
+          <div @click='toCreateProject'>
+            <h3>New +</h3>
+          </div>
+        </el-card>
       </el-col>
     </el-row>
   </div>
@@ -63,11 +57,13 @@ export default {
     toProjectDetail(id) {
       this.$router.push({ name: 'Project Detail', query: { id } })
     },
+    toCreateProject() {
+      this.$router.push({ name: 'Project Create' })
+    },
     addHeaders() {
       this.headers.Authorization = 'Bearer ' + this.token
     },
     goSetting(id) {
-      console.log(id)
       this.$router.push({ name: 'Project Setting', query: { id } })
     }
   }

@@ -7,6 +7,14 @@ export function projectInfo(id) {
   })
 }
 
+export function createProject(data) {
+  return request({
+    url: `/api/project/project/add`,
+    method: 'post',
+    data
+  })
+}
+
 export function updateProject(id, data) {
   return request({
     url: `/api/project/project/update/${id}`,

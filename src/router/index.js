@@ -58,6 +58,13 @@ export const constantRoutes = [
         hidden: true
       },
       {
+        path: 'create',
+        name: 'Project Create',
+        component: () => import('@/views/project/create/index'),
+        meta: { title: 'Create' },
+        hidden: true
+      },
+      {
         path: 'setting',
         name: 'Project Setting',
         component: () => import('@/views/project/setting/index'),
