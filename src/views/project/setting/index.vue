@@ -5,7 +5,9 @@
         <Basic></Basic>
       </el-tab-pane>
       <el-tab-pane label='成员管理'>成员管理</el-tab-pane>
-      <el-tab-pane label='高级设置'>高级设置</el-tab-pane>
+      <el-tab-pane label='高级设置'>
+        <advanced></advanced>
+      </el-tab-pane>
       <el-tab-pane label='回收站'>回收站</el-tab-pane>
     </el-tabs>
   </div>
@@ -13,11 +15,13 @@
 
 <script>
 import Basic from '@/views/project/setting/basic'
+import Advanced from '@/views/project/setting/advanced'
 
 export default {
   name: 'ProjectSetting',
   components: {
-    Basic
+    Basic,
+    Advanced
   }
 }
 </script>

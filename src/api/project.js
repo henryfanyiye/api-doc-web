@@ -23,6 +23,13 @@ export function updateProject(id, data) {
   })
 }
 
+export function deletePeoject(id) {
+  return request({
+    url: `/api/project/project/${id}`,
+    method: 'delete'
+  })
+}
+
 export function projectDetail(id) {
   return request({
     url: `/api/project/project/${id}`,
