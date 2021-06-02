@@ -33,10 +33,16 @@ import Layout from '@/layout'
 export const constantRoutes = [
   {
     path: '/login',
+    name: 'Login',
     component: () => import('@/views/login/index'),
     hidden: true
   },
-
+  {
+    path: '/register',
+    name: 'Register',
+    component: () => import('@/views/register/index'),
+    hidden: true
+  },
   {
     path: '/',
     component: Layout,
@@ -100,6 +106,33 @@ export const constantRoutes = [
         component: () => import('@/views/environment/detail'),
         meta: { title: 'Detail' },
         hidden: true
+      }
+    ]
+  },
+
+  {
+    path: '/setting',
+    component: Layout,
+    name: 'Setting',
+    meta: { title: 'Setting', icon: 'el-icon-s-tools' },
+    children: [
+      {
+        path: 'user',
+        name: 'User',
+        component: () => import('@/views/setting/user/index'),
+        meta: { title: 'User', icon: 'el-icon-user-solid' }
+      },
+      {
+        path: 'project',
+        name: 'Project',
+        component: () => import('@/views/setting/project/index'),
+        meta: { title: 'Project', icon: 'el-icon-tickets' }
+      },
+      {
+        path: 'team',
+        name: 'Team',
+        component: () => import('@/views/setting/team/index'),
+        meta: { title: 'Team', icon: 'el-icon-s-custom' }
       }
     ]
   },

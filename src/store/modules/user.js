@@ -50,8 +50,8 @@ const actions = {
         return Promise.reject('Verification failed, please Login again.')
       }
 
-      const { name, avatar } = data
-      commit('SET_NAME', name)
+      const { nick_name, username, avatar } = data
+      commit('SET_NAME', nick_name || username)
       commit('SET_AVATAR', avatar || 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
       return data
     })

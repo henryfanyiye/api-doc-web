@@ -11,7 +11,8 @@
           <i class='el-icon-caret-bottom' />
         </div>
         <el-dropdown-menu slot='dropdown' class='user-dropdown'>
-          <el-dropdown-item @click.native='logout'>
+          <el-dropdown-item>{{ name }}</el-dropdown-item>
+          <el-dropdown-item divided @click.native='logout'>
             <span style='display:block;'>Log Out</span>
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -32,6 +33,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'name',
       'sidebar',
       'avatar'
     ])
