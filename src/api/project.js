@@ -1,5 +1,20 @@
 import request from '@/utils/request'
 
+export function projectInfo(id) {
+  return request({
+    url: `/api/project/${id}`,
+    method: 'get'
+  })
+}
+
+export function updateProject(id, data) {
+  return request({
+    url: `/api/project/project/update/${id}`,
+    method: 'post',
+    data
+  })
+}
+
 export function projectDetail(id) {
   return request({
     url: `/api/project/project/${id}`,

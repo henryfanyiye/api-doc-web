@@ -14,11 +14,18 @@ export function detail(id) {
   })
 }
 
-export function create(data) {
+export function edit(data) {
   return request({
-    url: `/api/environment/create`,
+    url: `/api/environment/edit`,
     method: 'post',
     data
+  })
+}
+
+export function remove(id) {
+  return request({
+    url: `/api/environment/${id}`,
+    method: 'delete'
   })
 }
 

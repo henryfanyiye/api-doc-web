@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { list } from '@/api/environment'
+import { list, remove } from '@/api/environment'
 
 export default {
   name: 'Environment',
@@ -61,7 +61,10 @@ export default {
       this.$router.push({ name: 'Environment Detail', query: { id, type } })
     },
     remove(id) {
-      console.log(id)
+      this.loading = true
+      remove(id).then(() => {
+        this.getList()
+      })
     }
   }
 }

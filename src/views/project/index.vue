@@ -2,13 +2,13 @@
   <div class='project-container'>
     <el-row :gutter='24' v-loading='loading'>
       <el-col :xs='12' :sm='12' :lg='6' class='card-panel-col' v-for='item in projectList' :key='item.projectId'>
-        <div class='box-card' @click='toProjectDetail(item.projectId)'>
-          <el-card shadow='hover'>
+        <el-card shadow='hover' class='box-card'>
+          <i class='el-icon-setting item-setting' @click='goSetting(item.projectId)'></i>
+          <i class='el-icon-lock item-private' v-if='item.private'></i>
+          <div @click='toProjectDetail(item.projectId)'>
             <h3>{{ item.projectName }}</h3>
-            <i class='el-icon-setting'></i>
-            <i class='el-icon-lock'></i>
-          </el-card>
-        </div>
+          </div>
+        </el-card>
       </el-col>
       <el-col :xs='12' :sm='12' :lg='6' class='card-panel-col'>
         <el-upload
@@ -65,6 +65,10 @@ export default {
     },
     addHeaders() {
       this.headers.Authorization = 'Bearer ' + this.token
+    },
+    goSetting(id) {
+      console.log(id)
+      this.$router.push({ name: 'Project Setting', query: { id } })
     }
   }
 }
@@ -81,9 +85,32 @@ export default {
 }
 
 .box-card {
+  position: relative;
   width: 90%;
   text-align: center;
   cursor: pointer;
+}
+
+.item-setting {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: none;
+}
+
+.item-private {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: none;
+}
+
+.box-card:hover .item-setting {
+  display: block;
+}
+
+.box-card:hover .item-private {
+  display: block;
 }
 
 </style>
